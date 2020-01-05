@@ -1,0 +1,221 @@
+body{
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+    background-color: #e9f4ff;
+}
+
+.hide{
+    display: none !important;
+}
+
+.text-center{text-align: center;}
+
+.display-flex{
+    display: flex;
+}
+
+.w-50{width: 50% !important;}
+.w-10{width: 10% !important;}
+.flex-grow-2{flex-grow: 2;}
+.flex-grow-1{flex-grow: 1;}
+
+.flex-centric-items{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex-justify-content-center{
+    display: flex;
+    justify-content: center;
+}
+
+.flex-justify-content-start{
+    display: flex;
+    justify-content: start;
+}
+
+.flex-justify-between{
+    display: flex;
+    justify-content: space-between;
+}
+
+.margin-top-10{
+    margin-top: 10px !important;
+}
+
+.margin-top-20{
+    margin-top: 20px !important;
+}
+
+.button{
+    font-family: 'Orbitron', sans-serif;
+    display: inline-block;
+    font-weight: 400;
+    color: #212529;
+    text-align: center;
+    vertical-align: middle;
+    user-select: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: .5em 1em;
+    font-size: 20px;
+    line-height: 1.5;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.button:active{
+    box-shadow: 0 0 0 1px rgba(0,0,0,.15) inset;
+    border-color: #000;
+}
+
+.button:hover{
+    background-image: linear-gradient(transparent,rgba(0,0,0,.05) 40%,rgba(0,0,0,.1));
+}
+
+.button-primary{
+    background-color: #0078e7;
+    color: #fff;
+}
+
+.button-info{
+    color: #fff;
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+}
+
+.button-default{
+    background-color: #ccc;
+    color: #000;
+}
+
+.button-success {
+    color: #fff;
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.button-danger {
+    color: #fff;
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+#title-container{
+    /*background-color: lightsteelblue;*/
+    /*height: auto;
+    width: 25vw;
+    width: auto;*/
+    /*margin: auto;
+    z-index: 10;*/
+    position: relative;
+}
+
+#title-container #title-support{
+    border-left: 5px double #fd830d;
+    border-right: 5px double #fd830d;
+    height: 30px;
+    /*width: 80%;*/
+    width: 300px;
+    margin: auto;
+}
+
+#title-container #title{
+    text-align: center;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 3em;
+    text-shadow: 4px 4px 4px #aaa;
+    border: 5px solid #fd830d;
+    background-color: #fff;
+    color: #fd830d;
+    /*width: auto;*/
+    width: 350px;
+    margin: auto;
+    border-radius: 10px;
+    padding-bottom: 10px;
+}
+
+#player-ranking{
+    width: 350px;
+    position: absolute;
+    top: 30px;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    z-index: 1;
+    border: 5px solid #fd830d;
+    background-color: #fff;
+    border-radius: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    transition: display 1s ease, opacity 5s ease, height 10s ease;
+    -webkit-transition: display 1s ease, opacity 5s ease, height 10s ease;
+}
+
+#player-ranking.hide{
+    height: 0;
+    opacity: 0;
+}
+
+#player-ranking.show{
+    height: 200px;
+    opacity: 1;
+}
+
+#player-ranking #player-ranking-header{
+    padding: 5px 20px 5px 20px;
+    color: #001d53;
+    text-decoration: underline;
+}
+
+#player-ranking #player-ranking-list-container{
+    overflow-y: scroll;
+    height: 180px;
+    color: #fd830d;
+}
+
+#container{
+    width: 90vw;
+    min-height: 500px;
+    background-color: #fff;
+    margin: auto;
+    border-radius: 5px;
+    margin-top: 10px;
+    position: relative;
+    border: 2px solid #e9f4ff
+}
+
+#initial-page{
+    width: inherit;
+}
+
+#players-form-container{
+    font-size: 1em;
+    font-family: Arial, Helvetica, sans-serif;
+    width: 60%;
+    height: 200px;
+    margin: auto;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    padding: 20px;
+}
+
+input.player-input-name{
+    font-size: 2em;
+    padding: 5px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+
+#confirm-readiness-page #confirm-text{
+    font-family: 'press start 2p', 'barrio', 'comic sans';
+    font-size: 1.5em;
+    line-height: 40px;
+    margin-bottom: 20px;
+    text-align: center;
+}
