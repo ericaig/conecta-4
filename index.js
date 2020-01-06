@@ -12,10 +12,24 @@ class Conecta4 {
 		this.players = { player1: { name: '', points: 0, isMachine: false }, player2: { name: '', points: 0, isMachine: false } };
 	}
 
+	setPlayer1Infos(name, points, isMachine) {
+		if (typeof name !== 'undefined') { this.players.player1.name = name; }
+		if (typeof points !== 'undefined') { this.players.player1.points = points; }
+		if (typeof isMachine !== 'undefined') { this.players.player1.isMachine = isMachine; }
+	}
+
+	setPlayer2Infos(name, points, isMachine) {
+		if (typeof name !== 'undefined') { this.players.player2.name = name; }
+		if (typeof points !== 'undefined') { this.players.player2.points = points; }
+		if (typeof isMachine !== 'undefined') { this.players.player2.isMachine = isMachine; }
+	}
+
 	showPage(page, callback) {
 		var initialPage = document.getElementById("initial-page");
 		var readinessPage = document.getElementById("confirm-readiness-page");
 		var gamePlayPage = document.getElementById("gameplay-page");
+		var mainContainer = document.getElementById("container");
+		mainContainer.classList.add("flex-centric-items")
 
 		if (page === "initial") {
 			initialPage.classList.remove("hide");
@@ -29,23 +43,12 @@ class Conecta4 {
 			initialPage.classList.add("hide");
 			readinessPage.classList.add("hide");
 			gamePlayPage.classList.remove("hide");
+			mainContainer.classList.remove("flex-centric-items")
 		}
 
 		if (typeof callback === "function") {
 			callback();
 		}
-	}
-
-	setPlayer1Infos(name, points, isMachine) {
-		if (typeof name !== 'undefined') { this.players.player1.name = name; }
-		if (typeof points !== 'undefined') { this.players.player1.points = points; }
-		if (typeof isMachine !== 'undefined') { this.players.player1.isMachine = isMachine; }
-	}
-
-	setPlayer2Infos(name, points, isMachine) {
-		if (typeof name !== 'undefined') { this.players.player2.name = name; }
-		if (typeof points !== 'undefined') { this.players.player2.points = points; }
-		if (typeof isMachine !== 'undefined') { this.players.player2.isMachine = isMachine; }
 	}
 
 	togglePlayerRanking() {
@@ -158,6 +161,20 @@ class Conecta4 {
 				self.togglePlayerRanking();
 			});
 		}
+
+		//player readiness confirmation - NO
+		document.getElementById("playerNotReady").addEventListener('click', function (e) {
+			self.showPage("initial")
+		});
+
+		//player readiness confirmation - Yes
+		document.getElementById("playIsReady").addEventListener('click', function (e) {
+			self.showPage("gameplay", function () {
+				console.log('in game play page')
+			})
+		});
+
+		//self.showPage("gameplay");
 	}
 }
 

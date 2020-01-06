@@ -34,8 +34,8 @@
 						<div class="player-form">
 							<h4 class="text-center">Player 2</h4>
 							<div>
-								<input type="text" id="player2" value="" class="player-input-name" maxlength="20"
-									placeholder="Your name" autofocus /><br/>
+								<input type="text" id="player2" value="Sabina" class="player-input-name" maxlength="20"
+									placeholder="Your name" /><br/>
 								<label class="note">Play against machine<input type="checkbox"
 										id="play-machine-cb" /></label>
 							</div>
@@ -49,16 +49,22 @@
 				</div>
 			</div>
 
-			<div id="confirm-readiness-page" class="hide flex-centric-items">
-				<div id="confirm-text">The game is about to start!<br />Are you ready?</div>
-				<div>
-					<button id="playerNotReady" type="button" class="button button-default">No</button>
-					<button id="playIsReady" type="button" class="button button-primary" autofocus>Yes</button>
+			<div id="confirm-readiness-page" class="hide">
+				<div id="confirm-text">The game is about to start!<br />Are you ready?</div><br/>
+				<div id="crp-btns">
+					<div class="flex-centric-items">
+						<button id="playerNotReady" type="button" class="button button-default">No</button>
+						<button id="playIsReady" type="button" class="button button-primary">Yes</button>
+					</div>
 				</div>
 			</div>
 
 			<div id="gameplay-page" class="hide">
-
+				<div id="gp-header">
+					<div class="gp-player-section"><h3 id="player1-name">Eric Aig</h3></div>
+					<div class="gp-player-section active"><h3 id="player2-name">Sentinel</h3></div>
+				</div>
+				<hr class="gp-header-separator"/>
 			</div>
 		</div>
 	</section>

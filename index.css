@@ -211,11 +211,88 @@ input.player-input-name{
     border: 1px solid #ccc;
 }
 
-
 #confirm-readiness-page #confirm-text{
     font-family: 'press start 2p', 'barrio', 'comic sans';
     font-size: 1.5em;
     line-height: 40px;
     margin-bottom: 20px;
     text-align: center;
+}
+
+#confirm-readiness-page #crp-btns{
+    margin: auto;
+}
+
+#confirm-readiness-page #crp-btns button:first-child{
+    margin-right: 20px;
+}
+
+#gp-header{
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 2px 2px;
+    margin-bottom: 10px;
+}
+
+#gp-header .gp-player-section{
+    text-align: center;
+    color: rgb(156, 151, 151);
+    border-bottom: 4px solid #808080;
+    width: 40%;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    border-radius: 10px;
+    border-top: 2px solid #808080;
+}
+
+@keyframes playerBlinker1 {
+    from {
+        border-bottom-color: #fff;
+    }
+    to {
+        border-bottom-color: #f57a7c;
+    }
+}
+
+@keyframes playerBlinker2 {
+    from {
+        border-bottom-color: #fff;
+    }
+    to {
+        border-bottom-color: #0078e7;
+    }
+}
+
+#gp-header div.gp-player-section.active{
+	animation-duration: 1s;
+	animation-iteration-count:infinite;
+	animation-timing-function:ease-in-out;
+    animation-direction: alternate;
+    color: #212529;
+}
+
+#gp-header .gp-player-section.active:first-child{
+    animation-name: playerBlinker1;
+    border-top-color: #f57a7c;
+}
+
+#gp-header .gp-player-section.active:last-child{
+    animation-name: playerBlinker2;
+    border-top-color: #0078e7;
+}
+
+#gp-header .gp-player-section h3{
+    font-weight: 400;
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 5px;
+    padding: 0;
+    margin: 0;
+}
+
+hr.gp-header-separator{
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), #fd830d, rgba(0, 0, 0, 0));
+    padding: 0;
+    margin: 0;
 }
