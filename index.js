@@ -174,7 +174,7 @@ class Conecta4 {
 			})
 		});
 
-		//self.showPage("gameplay");
+		self.showPage("gameplay");
 	}
 }
 
