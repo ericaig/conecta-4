@@ -3,25 +3,34 @@
 class Conecta4 {
 	players = {};
 	machineName = 'Sentinel 🦾🤖';
+	matrix_array = [];
+	mirror_matrix_array = [];
+	totalColumns = 7;
+	totalRows = 6;
+	current_player = {};
+
 
 	constructor() {
 		this.resetGame();
 	}
 
 	resetGame() {
-		this.players = { player1: { name: '', points: 0, isMachine: false }, player2: { name: '', points: 0, isMachine: false } };
+		this.players = { player1: { name: '', points: 0, blockColor: '', isMachine: false }, player2: { name: '', points: 0, blockColor: '', isMachine: false } };
 	}
 
-	setPlayer1Infos(name, points, isMachine) {
-		if (typeof name !== 'undefined') { this.players.player1.name = name; }
-		if (typeof points !== 'undefined') { this.players.player1.points = points; }
-		if (typeof isMachine !== 'undefined') { this.players.player1.isMachine = isMachine; }
+	getRandomNumber(min, max, max_exclusive) {
+		//https://stackoverflow.com/a/1527820
+		/* MIN-MAX (inclusive) */
+		if (max_exclusive) return Math.floor(Math.random() * (max - min)) + min;
+		else return Math.floor(Math.random() * (max - min + 1)) + min;
 	}
 
-	setPlayer2Infos(name, points, isMachine) {
-		if (typeof name !== 'undefined') { this.players.player2.name = name; }
-		if (typeof points !== 'undefined') { this.players.player2.points = points; }
-		if (typeof isMachine !== 'undefined') { this.players.player2.isMachine = isMachine; }
+	setPlayer1Infos(obj){
+		this.players.player1 = Object.assign(this.players.player1, obj);
+	}
+
+	setPlayer2Infos(obj) {
+		this.players.player2 = Object.assign(this.players.player2, obj);
 	}
 
 	showPage(page, callback) {
@@ -89,8 +98,32 @@ class Conecta4 {
 	}
 
 	savePlayersInfos(d) {
-		this.setPlayer1Infos(d.player1, 0, false);
-		this.setPlayer2Infos(d.player2, 0, d.isMachine);
+		this.setPlayer1Infos({ name: d.player1, points: 0, isMachine: false });
+		this.setPlayer2Infos({ name: d.player2, points: 0, isMachine: d.isMachine });
+	}
+
+	assignColorToPlayers() {
+		// odd - red | even - blue
+		var rand = this.getRandomNumber(1, 100);
+		var playerSection1 = document.getElementById('gp-player1-section');
+		var playerSection2 = document.getElementById('gp-player2-section');
+
+		var toggleClasses = function(p1_color, p2_color){
+			playerSection1.classList.remove(p2_color);
+			playerSection1.classList.add(p1_color);
+			playerSection2.classList.remove(p1_color);
+			playerSection2.classList.add(p2_color);
+		};
+
+		if ((rand % 2) === 0) {
+			this.setPlayer1Infos({ blockColor: 'bl-active' })
+			this.setPlayer2Infos({ blockColor: 'rd-active' })
+			toggleClasses('bl-active', 'rd-active');
+		} else {
+			this.setPlayer1Infos({ blockColor: 'rd-active' })
+			this.setPlayer2Infos({ blockColor: 'bl-active' })
+			toggleClasses('rd-active', 'bl-active');
+		}
 	}
 
 	validatePlayersForm() {
@@ -100,6 +133,16 @@ class Conecta4 {
 
 		if (form.isValid) {
 			self.savePlayersInfos(form);
+			// print names to UI
+			var player1Name = document.getElementById('player1-name');
+			var player2Name = document.getElementById('player2-name');
+
+			// assign colors to players
+			self.assignColorToPlayers();
+
+			player1Name.innerHTML = form.player1;
+			player2Name.innerHTML = form.player2;
+
 			initialPage.classList.add("hide");
 			self.hidePlayerRanking(); //just in case it's open in 'initial page'
 			self.showPage("readiness");
@@ -117,6 +160,99 @@ class Conecta4 {
 		} else {
 			playerRanking.classList.add('hide');
 			playerRanking.classList.remove('show');
+		}
+	}
+
+	createNodeElement(tagName, classString, value, idString){
+		var el = document.createElement(tagName);
+
+		if (typeof idString !== "undefined"){
+			var elId = document.createAttribute("id");
+			elId.value = idString;
+			el.setAttributeNode(elId);
+		}
+
+		if (typeof classString !== "undefined") {
+			var elClass = document.createAttribute("class");
+			elClass.value = classString;
+			el.setAttributeNode(elClass);
+		}
+
+		if (typeof value !== "undefined"){
+			el.innerHTML = value;
+		}
+
+		return el;
+	}
+
+	getColumnLastEmptyBlock(columnId) {
+		var self = this;
+		var currentBlockId = 0;
+		var maxCapacity = false;
+
+		// reverse checking
+		for(var x = (this.totalRows - 1); x !== -1; x--){
+			currentBlockId = (self.totalColumns * x) + columnId;
+			if (self.mirror_matrix_array[currentBlockId - 1] === 0){
+				maxCapacity = false;
+				break;
+			}else{
+				maxCapacity = true;
+			}
+		}
+
+		return {
+			faceId: currentBlockId,
+			arrayId: currentBlockId - 1,
+			maxCapacity, // if true, then column already @max-capacity
+			blockEl: document.getElementById('block-' + currentBlockId)
+		}
+	}
+
+	highlightBlock(columnId) {
+		var result = this.getColumnLastEmptyBlock(columnId);
+		if (!result.maxCapacity){
+			result.blockEl.classList.add('bl-active');
+			this.mirror_matrix_array[result.arrayId] = 1;
+		}
+	}
+
+	generateBlocks(){
+		var columns = this.totalColumns;
+		var rows = this.totalRows;
+		var self = this;
+		var counter = 0;
+		var fakeCounter = 0;
+
+		var container = document.getElementById('interactive-blocks-container');
+		container.innerHTML = '';
+
+		for(var col = 0; col < columns; col++){
+			var htmlColumn = self.createNodeElement('div', 'ibc-column');
+			fakeCounter = col;
+
+			for (var row = 0; row < rows; row++) {
+				//counter++;
+				counter = fakeCounter + 1;
+
+				self.matrix_array.push(self.matrix_array.length + 1);
+				self.mirror_matrix_array.push(0);
+
+				var htmlBlockNum = self.createNodeElement('h4', 'block-num hide_', counter, 'block-num-' + counter);
+				var htmlBlock = self.createNodeElement('div', 'block block--id-' + fakeCounter, undefined, 'block-' + counter);
+				htmlBlock.appendChild(htmlBlockNum);
+				htmlColumn.appendChild(htmlBlock);
+
+				fakeCounter = fakeCounter + columns;
+			}
+
+			// add click event to each column container
+			htmlColumn.addEventListener('click', function (col) {
+				console.clear();
+				self.highlightBlock(col);
+			}.bind(this, col + 1));
+
+			container.appendChild(htmlColumn);
 		}
 	}
 
@@ -170,11 +306,9 @@ class Conecta4 {
 		//player readiness confirmation - Yes
 		document.getElementById("playIsReady").addEventListener('click', function (e) {
 			self.showPage("gameplay", function () {
-				console.log('in game play page')
-			})
+				self.generateBlocks();
+			});
 		});
-
-		self.showPage("gameplay");
 	}
 }
 

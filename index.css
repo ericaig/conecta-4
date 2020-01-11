@@ -50,6 +50,16 @@ body{
     margin-top: 20px !important;
 }
 
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Opera and Firefox */
+}
+
 .button{
     font-family: 'Orbitron', sans-serif;
     display: inline-block;
@@ -245,7 +255,7 @@ input.player-input-name{
     border-top: 2px solid #808080;
 }
 
-@keyframes playerBlinker1 {
+@keyframes blinker1 {
     from {
         border-bottom-color: #fff;
     }
@@ -254,7 +264,7 @@ input.player-input-name{
     }
 }
 
-@keyframes playerBlinker2 {
+@keyframes blinker2 {
     from {
         border-bottom-color: #fff;
     }
@@ -263,7 +273,8 @@ input.player-input-name{
     }
 }
 
-#gp-header div.gp-player-section.active{
+#gp-header div.gp-player-section.bl-active,
+#gp-header div.gp-player-section.rd-active{
 	animation-duration: 1s;
 	animation-iteration-count:infinite;
 	animation-timing-function:ease-in-out;
@@ -271,13 +282,13 @@ input.player-input-name{
     color: #212529;
 }
 
-#gp-header .gp-player-section.active:first-child{
-    animation-name: playerBlinker1;
+#gp-header .gp-player-section.rd-active{
+    animation-name: blinker1;
     border-top-color: #f57a7c;
 }
 
-#gp-header .gp-player-section.active:last-child{
-    animation-name: playerBlinker2;
+#gp-header .gp-player-section.bl-active{
+    animation-name: blinker2;
     border-top-color: #0078e7;
 }
 
