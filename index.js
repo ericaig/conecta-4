@@ -7,7 +7,9 @@ class Conecta4 {
 	mirror_matrix_array = [];
 	totalColumns = 7;
 	totalRows = 6;
-	current_player = {};
+	current_player = {id: '', player: {}};
+	busy = false;
+	messageTimeout = undefined;
 
 
 	constructor() {
@@ -15,7 +17,7 @@ class Conecta4 {
 	}
 
 	resetGame() {
-		this.players = { player1: { name: '', points: 0, blockColor: '', isMachine: false }, player2: { name: '', points: 0, blockColor: '', isMachine: false } };
+		this.players = { player1: { id: 1, name: '', points: 0, blockColor: '', isMachine: false }, player2: { id: 2, name: '', points: 0, blockColor: '', isMachine: false } };
 	}
 
 	getRandomNumber(min, max, max_exclusive) {
@@ -25,6 +27,31 @@ class Conecta4 {
 		else return Math.floor(Math.random() * (max - min + 1)) + min;
 	}
 
+	clearMessageBoxTimeout() {
+		if (typeof this.messageTimeout !== "undefined") clearTimeout(this.messageTimeout)
+	}
+
+	hideMessageBox() {
+		var msgEl = document.getElementById("message");
+
+		this.clearMessageBoxTimeout();
+		msgEl.classList.remove("show")
+		msgEl.classList.add("hide")
+	}
+
+	showMessageBox(message) {
+		var self = this;
+		var msgEl = document.getElementById("message");
+		msgEl.innerHTML = message;
+		msgEl.classList.add("show");
+		msgEl.classList.remove("hide");
+
+		this.clearMessageBoxTimeout();
+		this.messageTimeout = setTimeout(function () {
+			self.hideMessageBox();
+		}, 10000)
+	}
+
 	setPlayer1Infos(obj){
 		this.players.player1 = Object.assign(this.players.player1, obj);
 	}
@@ -32,6 +59,16 @@ class Conecta4 {
 	setPlayer2Infos(obj) {
 		this.players.player2 = Object.assign(this.players.player2, obj);
 	}
+
+	/*setCurrentPlayer(which) {
+		if (which.toLowerCase() === 'first') {
+			this.current_player.id = 1;
+			this.current_player.player = this.players.player1;
+		}else{
+			this.current_player.id = 2;
+			this.current_player = this.players.player2;
+		}
+	}*/
 
 	showPage(page, callback) {
 		var initialPage = document.getElementById("initial-page");
@@ -102,6 +139,34 @@ class Conecta4 {
 		this.setPlayer2Infos({ name: d.player2, points: 0, isMachine: d.isMachine });
 	}
 
+	togglePlayerNameSectionColor() {
+		var playerSection1 = document.getElementById('gp-player1-section');
+		var playerSection2 = document.getElementById('gp-player2-section');
+
+		playerSection1.classList.remove('bl-active', 'rd-active');
+		playerSection2.classList.remove('bl-active', 'rd-active');
+
+		if(this.current_player.id === 1) {
+			playerSection1.classList.add(this.current_player.player.blockColor);
+		}else{
+			playerSection2.classList.add(this.current_player.player.blockColor);
+		}
+	}
+
+	toggleCurrentPlayer() {
+		var id = this.current_player.id;
+
+		if (id === 1) {
+			this.current_player.id = 2;
+			this.current_player.player = this.players.player2;
+		} else {
+			this.current_player.id = 1;
+			this.current_player.player = this.players.player1;
+		}
+
+		this.togglePlayerNameSectionColor();
+	}
+
 	assignColorToPlayers() {
 		// odd - red | even - blue
 		var rand = this.getRandomNumber(1, 100);
@@ -112,8 +177,8 @@ class Conecta4 {
 			playerSection1.classList.remove(p2_color);
 			playerSection1.classList.add(p1_color);
 			playerSection2.classList.remove(p1_color);
-			playerSection2.classList.add(p2_color);
-		};
+			// playerSection2.classList.add(p2_color);
+		}
 
 		if ((rand % 2) === 0) {
 			this.setPlayer1Infos({ blockColor: 'bl-active' })
@@ -139,6 +204,9 @@ class Conecta4 {
 
 			// assign colors to players
 			self.assignColorToPlayers();
+
+			// configure first player
+			self.toggleCurrentPlayer();
 
 			player1Name.innerHTML = form.player1;
 			player2Name.innerHTML = form.player2;
@@ -204,16 +272,59 @@ class Conecta4 {
 		return {
 			faceId: currentBlockId,
 			arrayId: currentBlockId - 1,
+			columnId,
 			maxCapacity, // if true, then column already @max-capacity
 			blockEl: document.getElementById('block-' + currentBlockId)
 		}
 	}
 
+	checkIfPlayerHasWon(playerId, block){
+		var self = this;
+		self.busy = true;
+
+		var getColumnSequences = function() {
+			var sequences = [];
+			for (var x = (self.totalRows - 1); x !== -1; x--) {
+				var currentBlockId = (self.totalColumns * x) + block.columnId;
+				sequences.push(currentBlockId);
+			}
+			return sequences;
+		};
+
+		var verticalSearch = function() {
+			console.log('vertical search')
+		};
+
+		var horizontalSearch = function() {
+			console.log('horizontal search')
+		};
+
+		var diagonalSearch = function() {
+			console.log('diagonal search')
+		};
+
+		console.log(getColumnSequences());
+
+		console.log(playerId, block);
+	}
+
 	highlightBlock(columnId) {
+		if(this.busy){
+			this.showMessageBox("Busy, please wait...");
+			return;
+		}
+
 		var result = this.getColumnLastEmptyBlock(columnId);
 		if (!result.maxCapacity){
-			result.blockEl.classList.add('bl-active');
-			this.mirror_matrix_array[result.arrayId] = 1;
+			result.blockEl.classList.add(this.current_player.player.blockColor);
+			this.mirror_matrix_array[result.arrayId] = this.current_player.id;
+			this.checkIfPlayerHasWon(this.current_player.id, result);
+
+			this.toggleCurrentPlayer();
+
+			//console.log('this.mirror_matrix_array', this.mirror_matrix_array);
+		}else{
+			console.log('column [' + columnId + '] already @ max capacity');
 		}
 	}
 
@@ -248,7 +359,6 @@ class Conecta4 {
 
 			// add click event to each column container
 			htmlColumn.addEventListener('click', function (col) {
-				console.clear();
 				self.highlightBlock(col);
 			}.bind(this, col + 1));
 
@@ -259,6 +369,7 @@ class Conecta4 {
 	init() {
 		var self = this;
 
+		/*
 		// play against machine check box
 		var playAgainstMachine = document.getElementById('play-machine-cb');
 		playAgainstMachine.addEventListener('click', function () {
@@ -309,6 +420,38 @@ class Conecta4 {
 				self.generateBlocks();
 			});
 		});
+		*/
+
+		// close message alert on click
+		document.getElementById("message").addEventListener('click', function (e) {
+			self.hideMessageBox();
+		});
+
+		var tm1 = setTimeout(function(){
+			self.validatePlayersForm()
+
+			var tm2 = setTimeout(function () {
+				self.showPage("gameplay", function () {
+					self.generateBlocks();
+
+					/*var tm3 = setInterval(function () {
+						var col = document.querySelector('.ibc-column:first-child');
+						console.log("col", col)
+						col.classList.add('fake-hover');
+
+						var tm4 = setTimeout(function () {
+							col.classList.remove('fake-hover');
+							clearTimeout(tm4);
+						}, 500)
+						//clearInterval(tm3);
+					}, 1000)*/
+				});
+
+				clearTimeout(tm2);
+			}, 100)
+
+			clearTimeout(tm1);
+		}, 100)
 	}
 }
 
