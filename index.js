@@ -7,6 +7,7 @@ class Conecta4 {
 	mirror_matrix_array = [];
 	totalColumns = 7;
 	totalRows = 6;
+	total_win_chips = 4;
 	current_player = {id: '', player: {}};
 	busy = false;
 	messageTimeout = undefined;
@@ -282,17 +283,42 @@ class Conecta4 {
 		var self = this;
 		self.busy = true;
 
-		var getColumnSequences = function() {
-			var sequences = [];
-			for (var x = (self.totalRows - 1); x !== -1; x--) {
-				var currentBlockId = (self.totalColumns * x) + block.columnId;
-				sequences.push(currentBlockId);
-			}
-			return sequences;
-		};
-
 		var verticalSearch = function() {
-			console.log('vertical search')
+			console.clear();
+
+			var getSequence = function () {
+				// let's generate vertical line sequence from the clicked column
+				var sequences = [];
+				for (var x = (self.totalRows - 1); x !== -1; x--) {
+					var blockId = (self.totalColumns * x) + block.columnId;
+					var arrayId = blockId - 1;
+					// var mirror_matrix_value = self.mirror_matrix_array[arrayId];
+					// if (mirror_matrix_value) sequences.push({ blockId, arrayId});
+					sequences.push({ blockId, arrayId });
+				}
+				return sequences;
+			};
+
+			var sequence = getSequence();
+			var repetitions = 0;
+			var winningSequence = {}
+			for(var seq of sequence){
+				var mirror_matrix_value = self.mirror_matrix_array[seq.arrayId];
+
+				if (mirror_matrix_value) {
+					if (mirror_matrix_value === playerId) {
+						repetitions++;
+					} else {
+						repetitions = 0;
+					}
+				}
+			}
+
+			if (repetitions < self.total_win_chips) repetitions = 0;
+
+			console.log('vertical search repetitions', repetitions)
+			console.log('mirror matrix array', self.mirror_matrix_array);
+
 		};
 
 		var horizontalSearch = function() {
@@ -303,9 +329,11 @@ class Conecta4 {
 			console.log('diagonal search')
 		};
 
-		console.log(getColumnSequences());
+		verticalSearch();
 
-		console.log(playerId, block);
+		console.log(playerId, block, 'winningSequence');
+		self.busy = false;
+		self.hideMessageBox();
 	}
 
 	highlightBlock(columnId) {
